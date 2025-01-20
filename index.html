@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Editor de Sites - Impulsione Seu Negócio</title>
+    <script src="script.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-start p-4">
+    <header class="w-full max-w-4xl text-center mb-6">
+        <h1 class="text-4xl font-extrabold text-gray-800 mb-2">Editor de Sites</h1>
+        <p class="text-lg text-gray-600">Transforme ideias em resultados. Edite e personalize seu site para conquistar clientes.</p>
+    </header>
+    
+    <main class="w-full max-w-4xl bg-white shadow-md rounded-lg p-6">
+        <section class="mb-6">
+            <h2 class="text-2xl font-bold text-center text-gray-800">Destaque-se no Mercado</h2>
+            <p class="text-center text-gray-600 mt-2">
+                "Um site impactante é o primeiro passo para uma marca memorável."
+            </p>
+        </section>
+
+        <form id="fetchForm" class="flex mb-6 justify-between items-center">
+            <input 
+                id="urlInput" 
+                type="url" 
+                placeholder="Insira a URL do site para começar" 
+                class="w-4/5 px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                required>
+            <button 
+                type="submit" 
+                class="w-1/5 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-3 rounded-r-lg">
+                Buscar
+            </button>
+        </form>
+
+        <div id="editor" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Personalize Seu Site</h2>
+                <button 
+                    id="saveButton" 
+                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                    Salvar Alterações
+                </button>
+            </div>
+            <div id="editableContent" class="border border-gray-300 rounded-lg w-full bg-gray-50 p-4" style="height: auto; overflow: auto;">
+                <!-- Conteúdo dinâmico aqui -->
+            </div>
+        </div>
+
+        <div id="error" class="hidden text-red-500 mt-4"></div>
+    </main>
+
+    <footer class="w-full max-w-4xl text-center mt-6">
+        <p class="text-gray-600 text-sm">
+            "Grandes marcas começam com grandes ideias. Dê o primeiro passo hoje."
+        </p>
+    </footer>
+</body>
+</html>
