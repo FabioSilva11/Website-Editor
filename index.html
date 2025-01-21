@@ -21,6 +21,7 @@
             </p>
         </section>
 
+        <!-- Formulário para buscar URL -->
         <form id="fetchForm" class="flex mb-6 justify-between items-center">
             <input 
                 id="urlInput" 
@@ -35,6 +36,7 @@
             </button>
         </form>
 
+        <!-- Editor para personalizar o site -->
         <div id="editor" class="hidden">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-gray-800">Personalize Seu Site</h2>
@@ -44,11 +46,17 @@
                     Salvar Alterações
                 </button>
             </div>
-            <div id="editableContent" class="border border-gray-300 rounded-lg w-full bg-gray-50 p-4" style="height: auto; overflow: auto;">
-                <!-- Conteúdo dinâmico aqui -->
-            </div>
+<div class="w-full h-screen">
+    <iframe 
+        id="contentIframe" 
+        class="w-full h-full border border-gray-300 rounded-md" 
+        style="width: 100%; height: 100vh;">
+    </iframe>
+</div>
+
         </div>
 
+        <!-- Mensagem de erro -->
         <div id="error" class="hidden text-red-500 mt-4"></div>
     </main>
 

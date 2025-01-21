@@ -1,37 +1,46 @@
 <?php
 header('Content-Type: application/json');
 
-// Função para carregar o HTML de um site e adicionar marcações para edição
 function fetchWebsite($url) {
     $html = @file_get_contents($url);
     if ($html === FALSE) {
         return ['error' => 'Failed to fetch the website.'];
     }
 
+    // Define a codificação correta para o DOMDocument para evitar a transformação de caracteres especiais
     $dom = new DOMDocument();
-    @$dom->loadHTML($html);
+    
+    // Configura o erro para não gerar avisos
+    libxml_use_internal_errors(true);
+    
+    // Carrega o HTML sem modificar a codificação de caracteres
+    $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
 
+    // Restaurar erros do libxml
+    libxml_clear_errors();
+
+    // Criação do objeto XPath para manipulação do DOM
     $xpath = new DOMXPath($dom);
     $id = 0;
 
-    // Marca elementos editáveis no HTML e aplica os estilos de edição
+    // Marca os elementos editáveis apenas para os elementos de texto
     foreach ($xpath->query('//text()[normalize-space()]') as $textNode) {
         $parent = $textNode->parentNode;
         $editableId = 'editable_' . (++$id);
+        
+        // Adiciona os atributos sem modificar o conteúdo textual
         $parent->setAttribute('data-editable', 'true');
         $parent->setAttribute('data-id', $editableId);
-
-        // Aplica o atributo contenteditable
         $parent->setAttribute('contenteditable', 'true');
-
-        // Verifica se o elemento já possui a propriedade border definida no estilo
-
-
-        $textNode->nodeValue = htmlspecialchars($textNode->nodeValue);
     }
 
+    // Retorna o HTML modificado
     return ['html' => $dom->saveHTML()];
 }
+
+
+
+
 
 // Função para reverter as marcações de edição no HTML
 function revertEditingMarkers($htmlContent) {
@@ -112,7 +121,7 @@ if ($input['action'] === 'fetch') {
     }
 
     // Retorna o caminho para o frontend para redirecionamento
-    $viewPath = '/saved_pages/' . basename($savePath);
+    $viewPath = '/data/saved_pages/' . basename($savePath);
     echo json_encode(['success' => true, 'path' => $viewPath]);
 }
 ?>

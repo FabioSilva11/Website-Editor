@@ -1,71 +1,71 @@
 document.getElementById('fetchForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const urlInput = document.getElementById('urlInput');
-    const editor = document.getElementById('editor');
-    const editableContent = document.getElementById('editableContent');
-    const errorDiv = document.getElementById('error');
 
+    const urlInput = document.getElementById('urlInput');
+    const contentIframe = document.getElementById('contentIframe');
+    const errorDiv = document.getElementById('error');
+    const editor = document.getElementById('editor');
+
+    // Resetando mensagens de erro e escondendo o editor inicialmente
     errorDiv.textContent = '';
     errorDiv.classList.add('hidden');
     editor.classList.add('hidden');
 
     try {
+        // Envia uma requisição para buscar o conteúdo do site
         const response = await fetch('api.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'fetch', url: urlInput.value })
         });
 
-        if (!response.ok) throw new Error('Failed to fetch website content.');
+        if (!response.ok) throw new Error('Erro ao buscar o conteúdo do site.');
 
         const data = await response.json();
         if (data.error) throw new Error(data.error);
 
-        editableContent.innerHTML = data.html;
+        // Insere o conteúdo no iframe
+        const iframeDocument = contentIframe.contentDocument || contentIframe.contentWindow.document;
+        iframeDocument.open();
+        iframeDocument.write(data.html);
+        iframeDocument.close();
+
+        // Mostra o editor
         editor.classList.remove('hidden');
 
-        // Torne os textos editáveis
-        editableContent.querySelectorAll('[data-editable]').forEach(el => {
-            el.setAttribute('contenteditable', 'true');
-            el.style.border = '1px dashed #4CAF50'; // Adiciona uma borda verde pontilhada
-            el.style.padding = '5px'; // Adiciona um pequeno espaço interno
-            el.style.margin = '2px'; // Adiciona um pequeno espaço externo
-        });
     } catch (error) {
+        // Exibe mensagens de erro
         errorDiv.textContent = error.message;
         errorDiv.classList.remove('hidden');
     }
 });
 
 document.getElementById('saveButton').addEventListener('click', async () => {
-    const editableContent = document.getElementById('editableContent');
-    const elements = Array.from(editableContent.querySelectorAll('[data-editable]')).map(el => ({
-        id: el.dataset.id,
-        content: el.textContent
-    }));
+    const contentIframe = document.getElementById('contentIframe');
+    const iframeDocument = contentIframe.contentDocument || contentIframe.contentWindow.document;
 
-    // Obter o conteúdo HTML modificado
-    const htmlContent = editableContent.innerHTML;
+    // Obtém o conteúdo HTML do iframe
+    const htmlContent = iframeDocument.documentElement.outerHTML;
 
     try {
+        // Envia o HTML modificado para salvar no servidor
         const response = await fetch('api.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'save',
-                edits: elements,
-                htmlContent: htmlContent  // Enviar o HTML modificado
+                htmlContent: htmlContent // Envia o conteúdo completo do iframe
             })
         });
 
-        if (!response.ok) throw new Error('Failed to save changes.');
+        if (!response.ok) throw new Error('Erro ao salvar as alterações.');
 
         const data = await response.json();
         if (data.success) {
             // Redireciona para a página salva
             window.location.href = data.path;
         } else {
-            alert('Error saving the page.');
+            alert('Erro ao salvar a página.');
         }
     } catch (error) {
         alert(error.message);
